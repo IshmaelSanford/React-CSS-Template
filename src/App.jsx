@@ -4,6 +4,17 @@ import './ui.css'
 function App() {
   const [theme, setTheme] = useState('light')
   const [isLoading, setIsLoading] = useState(false)
+  const [alerts, setAlerts] = useState([
+    { id: 1, type: 'info', icon: 'ℹ️', message: 'This is an info alert.' },
+    { id: 2, type: 'success', icon: '✅', message: 'Operation successful!' },
+    { id: 3, type: 'warning', icon: '⚠️', message: 'Warning: Check your inputs.' },
+    { id: 4, type: 'error', icon: '⛔', message: 'Error: Something went wrong.' },
+  ])
+  const [toasts, setToasts] = useState([
+    { id: 1, type: 'success', message: 'Saved successfully!' }
+  ])
+  const [accordionOpen, setAccordionOpen] = useState(1)
+  const [showNotFound, setShowNotFound] = useState(false)
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
@@ -18,6 +29,31 @@ function App() {
     setTimeout(() => setIsLoading(false), 2000)
   }
 
+  const removeAlert = (id) => {
+    setAlerts(prev => prev.filter(alert => alert.id !== id))
+  }
+
+  const removeToast = (id) => {
+    setToasts(prev => prev.filter(toast => toast.id !== id))
+  }
+
+  const toggleAccordion = (id) => {
+    setAccordionOpen(prev => prev === id ? null : id)
+  }
+
+  if (showNotFound) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
+        <div className="empty-state empty-state--spacious">
+          <div style={{ fontSize: '4rem', marginBottom: 'var(--space-4)' }}>404</div>
+          <h1 style={{ marginBottom: 'var(--space-2)' }}>Page Not Found</h1>
+          <p style={{ marginBottom: 'var(--space-6)' }}>The page you are looking for does not exist or has been moved.</p>
+          <button className="btn" onClick={() => setShowNotFound(false)}>Go Back Home</button>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div style={{ minHeight: '100vh', paddingBottom: '4rem' }}>
       {/* Navbar */}
@@ -28,6 +64,9 @@ function App() {
         <div className="navbar__links">
           <a href="#" className="navbar__link">Components</a>
           <a href="#" className="navbar__link">Documentation</a>
+          <button className="btn btn--ghost" onClick={() => setShowNotFound(true)}>
+            404 Page
+          </button>
           <button className="btn btn--ghost" onClick={toggleTheme} style={{ paddingInline: '12px' }}>
             {theme === 'light' ? '🌙 Dark' : '☀️ Light'}
           </button>
@@ -147,7 +186,171 @@ function App() {
           </div>
         </section>
 
+        {/* New Components Showcase */}
+        <section className="stack">
+          <h2>New Components</h2>
+          
+          {/* Tooltips */}
+          <div className="card stack">
+            <h3>Tooltips</h3>
+            <div className="cluster">
+              <div className="tooltip tooltip--top">
+                <span className="tooltip-trigger btn">Top Tooltip</span>
+                <div className="tooltip-content">Hello from above!</div>
+              </div>
+              <div className="tooltip tooltip--right">
+                <span className="tooltip-trigger btn btn--ghost">Right Tooltip</span>
+                <div className="tooltip-content">Hello from right!</div>
+              </div>
+              <div className="tooltip tooltip--bottom">
+                <span className="tooltip-trigger btn btn--success">Bottom Tooltip</span>
+                <div className="tooltip-content">Hello from below!</div>
+              </div>
+              <div className="tooltip tooltip--left">
+                <span className="tooltip-trigger btn btn--error">Left Tooltip</span>
+                <div className="tooltip-content">Hello from left!</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Loaders */}
+          <div className="card stack">
+            <h3>Loaders</h3>
+            <div className="cluster">
+              <div className="loader loader--sm"></div>
+              <div className="loader loader--md"></div>
+              <div className="loader loader--lg"></div>
+            </div>
+          </div>
+
+          {/* Alerts */}
+          <div className="card stack">
+            <h3>Alerts</h3>
+            {alerts.length === 0 && <p className="text-center" style={{ color: 'var(--color-text-muted)' }}>All alerts dismissed. Refresh to reset.</p>}
+            {alerts.map(alert => (
+              <div key={alert.id} className={`alert alert--${alert.type}`}>
+                <span>{alert.icon}</span>
+                <span className="alert__content">{alert.message}</span>
+                <button className="alert__close" onClick={() => removeAlert(alert.id)}>×</button>
+              </div>
+            ))}
+          </div>
+
+          {/* Form Elements Extended */}
+          <div className="card stack">
+            <h3>Extended Form Elements</h3>
+            
+            <div className="input-group">
+              <label className="input-label">Textarea</label>
+              <textarea className="textarea" placeholder="Type your message here..."></textarea>
+            </div>
+
+            <div className="input-group">
+              <label className="input-label">Slider</label>
+              <input type="range" className="slider" />
+            </div>
+
+            <div className="input-group">
+              <label className="checkbox">
+                <input type="checkbox" className="checkbox-input" />
+                <span className="checkbox-label">I agree to the terms</span>
+              </label>
+            </div>
+
+            <div className="input-group">
+              <label className="input-label">Tag Select</label>
+              <div className="tag-select">
+                <span className="tag tag--selected tag--removable">
+                  React <button className="tag__remove">×</button>
+                </span>
+                <span className="tag tag--selected tag--removable">
+                  CSS <button className="tag__remove">×</button>
+                </span>
+                <input type="text" className="tag-select__input" placeholder="Add tag..." />
+              </div>
+            </div>
+          </div>
+
+          {/* Accordion */}
+          <div className="card stack">
+            <h3>Accordion</h3>
+            <div className="accordion">
+              <div className={`accordion-item ${accordionOpen === 1 ? 'is-open' : ''}`}>
+                <button className="accordion-trigger" onClick={() => toggleAccordion(1)}>
+                  Section 1 <span>{accordionOpen === 1 ? '−' : '+'}</span>
+                </button>
+                <div className="accordion-content">
+                  <p>Content for section 1. This is visible by default.</p>
+                </div>
+              </div>
+              <div className={`accordion-item ${accordionOpen === 2 ? 'is-open' : ''}`}>
+                <button className="accordion-trigger" onClick={() => toggleAccordion(2)}>
+                  Section 2 <span>{accordionOpen === 2 ? '−' : '+'}</span>
+                </button>
+                <div className="accordion-content">
+                  <p>Content for section 2. Hidden by default.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Table */}
+          <div className="card stack">
+            <h3>Table</h3>
+            <div className="table-container">
+              <table className="table table--striped">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Alice Johnson</td>
+                    <td>Admin</td>
+                    <td><span className="badge badge--success">Active</span></td>
+                  </tr>
+                  <tr>
+                    <td>Bob Smith</td>
+                    <td>Editor</td>
+                    <td><span className="badge badge--warning">Away</span></td>
+                  </tr>
+                  <tr>
+                    <td>Charlie Brown</td>
+                    <td>User</td>
+                    <td><span className="badge badge--error">Offline</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Empty State */}
+          <div className="card">
+            <div className="empty-state empty-state--compact">
+              <div style={{ fontSize: '2rem', marginBottom: 'var(--space-2)' }}>📂</div>
+              <h3>No Data Found</h3>
+              <p>Try adjusting your search filters.</p>
+              <button className="btn btn--ghost btn--sm" style={{ marginTop: 'var(--space-3)' }}>Clear Filters</button>
+            </div>
+          </div>
+
+        </section>
+
       </main>
+      
+      {/* Toast Demo (Fixed Position) */}
+      <div className="toast-container">
+        {toasts.map(toast => (
+          <div key={toast.id} className={`toast toast--${toast.type}`}>
+            <span>{toast.message}</span>
+            <button className="toast__close" onClick={() => removeToast(toast.id)}>×</button>
+          </div>
+        ))}
+      </div>
+
     </div>
   )
 }
