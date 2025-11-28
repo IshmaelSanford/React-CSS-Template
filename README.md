@@ -2,6 +2,9 @@
 
 A lightweight, single-file CSS design system built with vanilla CSS variables and utility classes. It features automatic light/dark mode support, a comprehensive spacing scale, and a set of modern, accessible components.
 
+![image](https://profitable-blush-ivto3dsnln-22qmy7z1ey.edgeone.dev/light_theme_css_template.png)
+![image](https://special-green-w3y3b0oj9h-xe6bn0ihp8.edgeone.dev/dark_theme_css_template.png)
+
 ## Features
 
 - 🌓 **Automatic Dark Mode**: Built-in support for light and dark themes using CSS variables.
